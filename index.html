@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Nobel Edge Earning</title>
+    
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Monetag Ad Script Added Here -->
+    <script src="https://libtl.com/sdk.js" data-zone="10887790" data-sdk="show_10887790"></script>
+    
+    <style>
+        :root {
+            --bg-dark: #000000; --bg-card: #111111; --bg-card-light: #1a1a1a;
+            --gold: #FFD700; --gold-dark: #DAA520;
+            --text-light: #ffffff; --text-muted: #aaaaaa;
+            --danger: #e74c3c; --success: #2ecc71; --blue: #3498db;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background-color: var(--bg-dark); color: var(--text-light); display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+        
+        header { padding: 15px 20px; background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-dark) 100%); border-bottom: 1px solid var(--gold-dark); display: flex; justify-content: space-between; align-items: center; }
+        .user-info { display: flex; align-items: center; gap: 10px; }
+        .avatar { width: 40px; height: 40px; background: var(--gold); border-radius: 50%; display: flex; justify-content: center; align-items: center; color: var(--bg-dark); font-weight: bold; }
+        .balance-badge { background: var(--bg-card-light); padding: 8px 15px; border-radius: 20px; border: 1px solid var(--gold); color: var(--gold); font-weight: bold; }
+
+        main { flex: 1; overflow-y: auto; padding: 15px; padding-bottom: 80px; }
+        .view { display: none; animation: fadeIn 0.3s ease; }
+        .view.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .card { background-color: var(--bg-card); border: 1px solid #333; border-radius: 15px; padding: 20px; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); text-align: center; }
+        .card h2 { color: var(--gold); margin-bottom: 10px; font-size: 1.2rem; }
+        
+        .btn { width: 100%; padding: 15px; border: none; border-radius: 10px; background: linear-gradient(45deg, var(--gold-dark), var(--gold)); color: var(--bg-dark); font-size: 1.1rem; font-weight: bold; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; transition: transform 0.1s;}
+        .btn:active { transform: scale(0.95); }
+        .btn:disabled { background: #333; color: #666; cursor: not-allowed; }
+        
+        input, select { width: 100%; padding: 12px; margin-bottom: 15px; background: var(--bg-dark); border: 1px solid var(--gold-dark); color: var(--text-light); border-radius: 8px; }
+
+        .level-box { background: var(--bg-card-light); border: 1px solid #444; border-radius: 10px; padding: 15px; margin-bottom: 15px; text-align: left; position: relative; }
+        .level-box.active-level { border-color: var(--gold); box-shadow: 0 0 10px rgba(255, 215, 0, 0.3); }
+        .level-box.locked { opacity: 0.5; pointer-events: none; }
+        .level-box.completed { border-color: var(--success); }
+        .level-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .level-title { font-weight: bold; font-size: 1.1rem; color: var(--gold); }
+        .level-reward { font-size: 0.85rem; background: #333; padding: 3px 8px; border-radius: 5px; color: white; }
+        
+        .progress-container { width: 100%; background-color: #333; border-radius: 10px; height: 20px; overflow: hidden; margin: 10px 0; position: relative; }
+        .progress-bar { height: 100%; background: linear-gradient(90deg, var(--gold-dark), var(--gold)); width: 0%; transition: width 0.5s ease; }
+        .progress-text { position: absolute; width: 100%; text-align: center; top: 0; left: 0; font-size: 0.8rem; line-height: 20px; font-weight: bold; color: var(--bg-dark); }
+
+        .spinner-box { width: 150px; height: 150px; border: 8px solid var(--gold-dark); border-radius: 50%; margin: 20px auto; display: flex; justify-content: center; align-items: center; background: radial-gradient(circle, #222 0%, #000 100%); box-shadow: 0 0 20px rgba(255, 215, 0, 0.2); }
+        .spin-result { font-size: 3rem; font-weight: bold; color: var(--gold); }
+
+        .rank-item { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #333; align-items: center; }
+        .rank-1 { color: var(--gold); font-weight: bold; font-size: 1.1rem; }
+
+        nav { position: fixed; bottom: 0; width: 100%; background-color: var(--bg-card); display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #333; z-index: 50; }
+        .nav-item { color: var(--text-muted); text-align: center; cursor: pointer; font-size: 0.75rem; flex: 1; }
+        .nav-item i { display: block; font-size: 1.2rem; margin-bottom: 3px; }
+        .nav-item.active { color: var(--gold); }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="user-info">
+            <div class="avatar" id="user-avatar"><i class="fas fa-user"></i></div>
+            <div>
+                <div style="font-weight: bold; font-size:1rem;" id="user-name">Loading...</div>
+                <div style="font-size: 0.75rem; color: var(--gold);" id="user-level-badge">Level 1</div>
+            </div>
+        </div>
+        <div class="balance-badge"><i class="fas fa-coins"></i> <span id="header-balance">0</span></div>
+    </header>
+
+    <main>
+        <div id="view-earn" class="view active">
+            <h2 style="text-align: center; color: var(--gold); margin-bottom: 15px;"><i class="fas fa-video"></i> Earn Coins</h2>
+            <div id="levels-wrapper"></div>
+        </div>
+
+        <div id="view-spin" class="view">
+            <div class="card">
+                <h2><i class="fas fa-dharmachakra"></i> Lucky Spin</h2>
+                <p style="font-size: 0.85rem; color: var(--text-muted);">Spin the wheel to earn bonus coins!</p>
+                <div class="spinner-box"><div class="spin-result" id="spin-result-text">?</div></div>
+                <div style="margin-bottom: 15px;">Spins Today: <span id="spin-count" style="color:var(--gold); font-weight:bold;">0</span> / 15</div>
+                <button class="btn" id="btn-spin" onclick="startSpin()"><i class="fas fa-play"></i> Spin Now</button>
+            </div>
+        </div>
+
+        <div id="view-referral" class="view">
+            <div class="card">
+                <h2><i class="fas fa-users"></i> Invite Friends</h2>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">Earn <b><span id="ref-reward-text">50</span> Coins</b> per referral!</p>
+                <div style="background:#222; padding:15px; border-radius:10px; margin-bottom:15px;">
+                    <h1 style="color:var(--gold);" id="total-refs">0</h1>
+                    <small style="color:var(--text-muted);">Total Referrals</small>
+                </div>
+                <input type="text" id="ref-link" readonly style="text-align:center; color:var(--gold);">
+                <button class="btn" onclick="copyRefLink()"><i class="fas fa-copy"></i> Copy Link</button>
+            </div>
+        </div>
+
+        <div id="view-leaderboard" class="view">
+            <div class="card" style="text-align: left;">
+                <h2 style="text-align: center;"><i class="fas fa-trophy"></i> Top Earners</h2>
+                <div id="leaderboard-list"><div style="text-align:center; color:#888;">Loading...</div></div>
+            </div>
+        </div>
+
+        <div id="view-withdraw" class="view">
+            <div class="card" style="text-align: left;">
+                <h2 style="text-align: center;"><i class="fas fa-wallet"></i> Withdraw</h2>
+                <!-- Updated instruction text -->
+                <p style="font-size: 0.85rem; text-align:center; color: var(--text-muted); margin-bottom: 15px;">5000 Coins = 1 USD / 100 BDT | Min: 5000 | Fee: 5%</p>
+                
+                <!-- Added International Methods & onchange event -->
+                <select id="withdraw-method" onchange="calculateWithdraw()">
+                    <option value="bKash">bKash (BDT)</option>
+                    <option value="Nagad">Nagad (BDT)</option>
+                    <option value="Binance">Binance Pay (USD)</option>
+                    <option value="Payeer">Payeer (USD)</option>
+                </select>
+                
+                <input type="text" id="withdraw-number" placeholder="Account Number / Wallet ID">
+                <input type="number" id="withdraw-amount" placeholder="Amount (Coins)" oninput="calculateWithdraw()">
+                
+                <div style="background: #222; padding: 10px; border-radius: 8px; margin-bottom: 15px; font-size: 0.9rem;">
+                    Receive: <strong style="color: var(--success)">
+                        <span id="withdraw-receive">0</span> 
+                        <span id="withdraw-currency">BDT</span> <!-- Dynamic Currency Tag -->
+                    </strong>
+                </div>
+                <button class="btn" onclick="submitWithdraw()"><i class="fas fa-paper-plane"></i> Submit Request</button>
+            </div>
+        </div>
+    </main>
+
+    <nav>
+        <div class="nav-item active" onclick="switchTab('earn')"><i class="fas fa-video"></i>Earn</div>
+        <div class="nav-item" onclick="switchTab('spin')"><i class="fas fa-dharmachakra"></i>Spin</div>
+        <div class="nav-item" onclick="switchTab('referral')"><i class="fas fa-user-plus"></i>Refer</div>
+        <div class="nav-item" onclick="switchTab('leaderboard'); loadLeaderboard();"><i class="fas fa-trophy"></i>Top</div>
+        <div class="nav-item" onclick="switchTab('withdraw')"><i class="fas fa-wallet"></i>Cash</div>
+    </nav>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, addDoc, query, orderBy, limit, getDocs, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyD5LlPQYWv52I6XUoFl0gzV69E3Q1q846M",
+            authDomain: "noble-7da44.firebaseapp.com",
+            databaseURL: "https://noble-7da44-default-rtdb.firebaseio.com",
+            projectId: "noble-7da44",
+            storageBucket: "noble-7da44.firebasestorage.app",
+            messagingSenderId: "382708530902",
+            appId: "1:382708530902:web:d196322a609e12ab991377"
+        };
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+        
+        let tgUser = tg.initDataUnsafe?.user || { id: 1968724438, first_name: "Test User" };
+        const startParam = tg.initDataUnsafe?.start_param; 
+        const BOT_USERNAME = "NobelEdge90_bot"; 
+
+        let LEVELS = { 1: { maxAds: 40, reward: 5 }, 2: { maxAds: 30, reward: 10 }, 3: { maxAds: 15, reward: 20 }, 4: { maxAds: 5, reward: 35 } };
+        let REF_REWARD = 50;
+        let userData = {};
+        const todayStr = new Date().toISOString().split('T')[0];
+
+        window.switchTab = (tabId) => {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(v => v.classList.remove('active'));
+            document.getElementById(`view-${tabId}`).classList.add('active');
+            
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => {
+                if(item.getAttribute('onclick').includes(`'${tabId}'`)) {
+                    item.classList.add('active');
+                }
+            });
+        };
+
+        async function initApp() {
+            document.getElementById('user-name').innerText = tgUser.first_name;
+            document.getElementById('user-avatar').innerHTML = tgUser.first_name.charAt(0);
+            document.getElementById('ref-link').value = `https://t.me/${BOT_USERNAME}?start=${tgUser.id}`;
+
+            try {
+                const settingsSnap = await getDoc(doc(db, "settings", "rewards"));
+                if(settingsSnap.exists()) {
+                    const sd = settingsSnap.data();
+                    LEVELS[1].reward = sd.lvl1 || 5; LEVELS[2].reward = sd.lvl2 || 10;
+                    LEVELS[3].reward = sd.lvl3 || 20; LEVELS[4].reward = sd.lvl4 || 35;
+                    REF_REWARD = sd.ref || 50;
+                    document.getElementById('ref-reward-text').innerText = REF_REWARD;
+                }
+            } catch(e) { console.log("Default rewards loaded."); }
+
+            const userRef = doc(db, "users", tgUser.id.toString());
+            const userSnap = await getDoc(userRef);
+
+            if (userSnap.exists()) {
+                userData = userSnap.data();
+                if(userData.lastDate !== todayStr) {
+                    userData.spinsToday = 0; 
+                    userData.lastDate = todayStr;
+                    userData.lvl4DoneToday = false; 
+                    if(userData.level === 4 && userData.watchedAds >= 5) {
+                        userData.watchedAds = 0;
+                    }
+                    await updateDoc(userRef, { spinsToday: 0, lastDate: todayStr, lvl4DoneToday: false, watchedAds: userData.watchedAds });
+                }
+            } else {
+                userData = { tg_id: tgUser.id, name: tgUser.first_name, balance: 0, level: 1, watchedAds: 0, spinsToday: 0, lastDate: todayStr, totalRefs: 0, isBlocked: false, lvl4DoneToday: false };
+                await setDoc(userRef, userData);
+                if (startParam && startParam != tgUser.id) {
+                    try { await updateDoc(doc(db, "users", startParam.toString()), { balance: increment(REF_REWARD), totalRefs: increment(1) }); } catch(e) {}
+                }
+            }
+
+            if(userData.isBlocked) {
+                document.body.innerHTML = "<h1 style='color:red; text-align:center; margin-top:50px;'>Your Account is Banned!</h1>";
+                return;
+            }
+            updateUI();
+        }
+
+        function updateUI() {
+            document.getElementById('header-balance').innerText = userData.balance;
+            document.getElementById('user-level-badge').innerText = `Level ${userData.level}`;
+            document.getElementById('total-refs').innerText = userData.totalRefs || 0;
+            
+            let levelsHTML = "";
+            for(let i = 1; i <= 4; i++) {
+                const lvlData = LEVELS[i];
+                let statusClass = "", btnText = "", btnState = "", progressPercent = 0, progressText = "";
+
+                if(userData.level > i) {
+                    statusClass = "completed"; btnText = "<i class='fas fa-check-circle'></i> Completed"; btnState = "disabled";
+                    progressPercent = 100; progressText = `${lvlData.maxAds} / ${lvlData.maxAds} Ads`;
+                } else if(userData.level === i) {
+                    if(i === 4 && userData.lvl4DoneToday) {
+                        statusClass = "completed"; btnText = "<i class='fas fa-lock'></i> Come Tomorrow"; btnState = "disabled";
+                        progressPercent = 100; progressText = `${lvlData.maxAds} / ${lvlData.maxAds} Ads`;
+                    } else {
+                        statusClass = "active-level"; btnText = "<i class='fas fa-play'></i> Watch Ad"; btnState = "";
+                        progressPercent = (userData.watchedAds / lvlData.maxAds) * 100;
+                        progressText = `${userData.watchedAds} / ${lvlData.maxAds} Ads`;
+                    }
+                } else {
+                    statusClass = "locked"; btnText = "<i class='fas fa-lock'></i> Locked"; btnState = "disabled";
+                    progressPercent = 0; progressText = `0 / ${lvlData.maxAds} Ads`;
+                }
+
+                levelsHTML += `
+                    <div class="level-box ${statusClass}">
+                        <div class="level-header">
+                            <span class="level-title">Level ${i}</span>
+                            <span class="level-reward">Reward: ${lvlData.reward} Coins</span>
+                        </div>
+                        <div class="progress-container">
+                            <div class="progress-bar" style="width: ${progressPercent}%"></div>
+                            <div class="progress-text">${progressText}</div>
+                        </div>
+                        <button class="btn" style="padding: 10px; font-size: 0.95rem;" ${btnState} onclick="startAd(${i})">${btnText}</button>
+                    </div>`;
+            }
+            document.getElementById('levels-wrapper').innerHTML = levelsHTML;
+            document.getElementById('spin-count').innerText = userData.spinsToday || 0;
+            const spinBtn = document.getElementById('btn-spin');
+            if(userData.spinsToday >= 15) { spinBtn.disabled = true; spinBtn.innerHTML = "<i class='fas fa-lock'></i> Tomorrow"; } 
+            else { spinBtn.disabled = false; spinBtn.innerHTML = "<i class='fas fa-play'></i> Spin Now"; }
+        }
+
+        let isWatching = false;
+        window.startAd = async (level) => {
+            if (isWatching) return;
+            isWatching = true;
+            
+            try {
+                if (typeof show_10887790 === 'function') {
+                    show_10887790(); 
+                }
+            } catch (error) {}
+            
+            const btns = document.querySelectorAll('.level-box button');
+            btns.forEach(b => b.disabled = true);
+            
+            setTimeout(async () => {
+                await rewardLevelAd(level);
+                isWatching = false;
+                alert("সফল! রিওয়ার্ড যোগ করা হয়েছে।");
+            }, 2000); 
+        };
+
+        async function rewardLevelAd(levelId) {
+            const lvl = LEVELS[levelId];
+            userData.balance += lvl.reward;
+            userData.watchedAds += 1;
+            
+            if (userData.watchedAds >= lvl.maxAds) {
+                if(userData.level < 4) { 
+                    userData.level += 1; 
+                    userData.watchedAds = 0; 
+                    alert(`🎉 Level ${userData.level} Unlocked!`); 
+                }
+                else if(userData.level === 4) { 
+                    userData.lvl4DoneToday = true; 
+                    alert(`🎉 আজকের লিমিট শেষ! আগামীকাল আবার আসুন।`); 
+                }
+            }
+            await updateDoc(doc(db, "users", tgUser.id.toString()), { 
+                balance: userData.balance, 
+                level: userData.level, 
+                watchedAds: userData.watchedAds,
+                lvl4DoneToday: userData.lvl4DoneToday || false
+            });
+            updateUI();
+        }
+
+        let isSpinning = false;
+        window.startSpin = async () => {
+            if (isSpinning || userData.spinsToday >= 15) return;
+            isSpinning = true;
+            document.getElementById('btn-spin').disabled = true;
+            const resText = document.getElementById('spin-result-text');
+            const possibleValues = [0, 5, 10, 20, 50, 100]; 
+            let count = 0;
+            const spinAnim = setInterval(() => {
+                resText.innerText = possibleValues[Math.floor(Math.random() * possibleValues.length)];
+                count++;
+                if(count > 20) { clearInterval(spinAnim); processSpinResult(); }
+            }, 50);
+        };
+
+        async function processSpinResult() {
+            const rand = Math.random() * 100;
+            let winAmount = 0;
+            if (rand <= 25) winAmount = 0;
+            else if (rand <= 65) winAmount = 5;
+            else if (rand <= 85) winAmount = 10;
+            else if (rand <= 94) winAmount = 20;
+            else if (rand <= 98) winAmount = 50;
+            else winAmount = 100;
+            document.getElementById('spin-result-text').innerText = winAmount === 0 ? "0" : `+${winAmount}`;
+            userData.spinsToday += 1;
+            
+            try {
+                if (typeof show_10887790 === 'function') {
+                    show_10887790(); 
+                }
+            } catch (error) {}
+            
+            await applySpinReward(winAmount);
+        }
+
+        async function applySpinReward(amount) {
+            userData.balance += amount;
+            await updateDoc(doc(db, "users", tgUser.id.toString()), { balance: userData.balance, spinsToday: userData.spinsToday });
+            updateUI();
+            isSpinning = false;
+        }
+
+        window.copyRefLink = () => { 
+            const linkInput = document.getElementById('ref-link');
+            linkInput.select();
+            document.execCommand("copy");
+            alert("Referral link copied!");
+        };
+
+        // --- UPDATED WITHDRAW LOGIC ---
+        window.calculateWithdraw = () => { 
+            const amt = parseInt(document.getElementById('withdraw-amount').value) || 0; 
+            const method = document.getElementById('withdraw-method').value;
+            const afterFee = amt - (amt * 0.05); // 5% fee deduct
+            
+            let receiveAmount = "0";
+            let currency = "BDT";
+
+            if (amt >= 5000) {
+                if (method === "bKash" || method === "Nagad") {
+                    // For Bangladeshi users: 5000 Coins = 100 BDT
+                    receiveAmount = (afterFee * 0.02).toFixed(2);
+                    currency = "BDT";
+                } else {
+                    // For International users: 5000 Coins = 1 USD
+                    receiveAmount = (afterFee / 5000).toFixed(2);
+                    currency = "USD";
+                }
+            }
+
+            document.getElementById('withdraw-receive').innerText = receiveAmount; 
+            document.getElementById('withdraw-currency').innerText = currency; 
+        };
+        
+        window.submitWithdraw = async () => {
+            const method = document.getElementById('withdraw-method').value;
+            const number = document.getElementById('withdraw-number').value;
+            const amount = parseInt(document.getElementById('withdraw-amount').value);
+            
+            if(!number || amount < 5000 || amount > userData.balance) {
+                return alert("Invalid amount or Account number!");
+            }
+
+            // Calculate final amount and currency based on method
+            const afterFee = amount - (amount * 0.05);
+            let finalAmount, finalCurrency;
+
+            if (method === "bKash" || method === "Nagad") {
+                finalAmount = (afterFee * 0.02).toFixed(2);
+                finalCurrency = "BDT";
+            } else {
+                finalAmount = (afterFee / 5000).toFixed(2);
+                finalCurrency = "USD";
+            }
+
+            userData.balance -= amount;
+            await updateDoc(doc(db, "users", tgUser.id.toString()), { balance: userData.balance });
+            
+            // Save dynamically BDT or USD to the database
+            await addDoc(collection(db, "withdrawals"), { 
+                tg_id: tgUser.id, 
+                name: tgUser.first_name, 
+                method: method, 
+                number: number, 
+                coins: amount, 
+                payableAmount: finalAmount, // Saves amount based on currency
+                currency: finalCurrency,    // Saves "BDT" or "USD"
+                status: 'pending', 
+                date: new Date().toLocaleString() 
+            });
+            
+            alert("Withdrawal submitted!"); 
+            updateUI();
+            
+            // Clear inputs after submit
+            document.getElementById('withdraw-amount').value = "";
+            document.getElementById('withdraw-number').value = "";
+            document.getElementById('withdraw-receive').innerText = "0";
+        };
+
+        window.loadLeaderboard = async () => {
+            const lbDiv = document.getElementById('leaderboard-list');
+            const snap = await getDocs(query(collection(db, "users"), orderBy("balance", "desc"), limit(10)));
+            let html = "", rank = 1;
+            snap.forEach(d => { html += `<div class="rank-item"><div><b>#${rank}</b> ${d.data().name}</div><div style="color:var(--gold);">${d.data().balance} C</div></div>`; rank++; });
+            lbDiv.innerHTML = html;
+        };
+
+        initApp();
+    </script>
+</body>
+</html>
