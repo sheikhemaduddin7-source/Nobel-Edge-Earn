@@ -1,0 +1,1534 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Creative Skills Academy — Learn • Practice • Excel</title>
+  <meta name="description" content="Premier Graphic Design Academy offering professional training in Photoshop, Illustrator, UI/UX, and Branding." />
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Amiri:wght@700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            navy: {
+              950: '#040F24',
+              900: '#071A3D',
+              850: '#0A2454',
+              800: '#0E2C63',
+              700: '#123B78',
+              600: '#1B4E9B'
+            },
+            gold: {
+              300: '#F3E19E',
+              400: '#E5C564',
+              500: '#D4AF37',
+              600: '#B89324',
+              700: '#947417'
+            },
+            surface: {
+              light: '#F5F7FB',
+              dark: '#05132D'
+            }
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            serif: ['"Cinzel"', 'serif'],
+            arabic: ['"Amiri"', 'serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- React 18 & Babel Standalone -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <style>
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #printable-certificate, #printable-certificate * {
+        visibility: visible;
+      }
+      #printable-certificate {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100vw;
+        height: 100vh;
+        margin: 0;
+        padding: 20px;
+        background: white !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+    }
+
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #071A3D;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1B4E9B;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #D4AF37;
+    }
+  </style>
+</head>
+<body class="bg-surface-light dark:bg-surface-dark text-slate-800 dark:text-slate-100 font-sans transition-colors duration-200">
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect, useMemo } = React;
+
+    // আজকের তারিখ পাওয়ার ডায়নামিক ফাংশন
+    const getTodayDateFormatted = () => {
+      const today = new Date();
+      return today.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    };
+
+    // মুহাম্মদ ইমাদ উদ্দিনের জন্য ইসলামিক বুকশেলফ ও ক্যালিগ্রাফি স্টাইল প্রোফাইল ইমেজ
+    const imadIslamicAvatar = "https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?auto=format&fit=crop&w=300&h=300&q=80";
+
+    // ৫০ জন শিক্ষার্থীর ডাটাবেস (মেল-ফিমেল ছবি ও নির্দিষ্ট লোকেশনসহ)
+    const rawStudents = [
+      { name: "Tanvir Hasan", gender: "m", location: "Dhaka, Bangladesh", img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d" },
+      { name: "Sarah Jenkins", gender: "f", location: "London, United Kingdom", img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330" },
+      { name: "Arham Chowdhury", gender: "m", location: "Chittagong, Bangladesh", img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e" },
+      { name: "Muhammad Imad Uddin", gender: "m", location: "Moulvibazar, Sylhet, Bangladesh", img: imadIslamicAvatar }, // ৪ নম্বর পজিশন
+      { name: "Emily Carter", gender: "f", location: "Manchester, United Kingdom", img: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80" },
+      { name: "Rayan Al-Farsi", gender: "m", location: "Muscat, Oman", img: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e" },
+      { name: "Ananya Sen", gender: "f", location: "Kolkata, India", img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2" },
+      { name: "Liam O'Connor", gender: "m", location: "Dublin, Ireland", img: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7" },
+      { name: "Mahir Faisal", gender: "m", location: "Rajshahi, Bangladesh", img: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d" },
+      { name: "Jessica Zhang", gender: "f", location: "Toronto, Canada", img: "https://images.unsplash.com/photo-1517841905240-472988babdf9" },
+      { name: "Zayan Siddique", gender: "m", location: "Sylhet, Bangladesh", img: "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61" },
+      { name: "Carlos Mendez", gender: "m", location: "Madrid, Spain", img: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6" },
+      { name: "Nusrat Jahan", gender: "f", location: "Cumilla, Bangladesh", img: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1" },
+      { name: "David Miller", gender: "m", location: "Melbourne, Australia", img: "https://images.unsplash.com/photo-1513956589380-bad6acb9b9d4" },
+      { name: "Farhan Kabir", gender: "m", location: "Khulna, Bangladesh", img: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce" },
+      { name: "Aisha Patel", gender: "f", location: "Mumbai, India", img: "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91" },
+      { name: "Lucas Silva", gender: "m", location: "São Paulo, Brazil", img: "https://images.unsplash.com/photo-1501196354995-cbb51c65aaea" },
+      { name: "Sadia Rahman", gender: "f", location: "Moulvibazar, Bangladesh", img: "https://images.unsplash.com/photo-1502685104226-ee32379fefbe" },
+      { name: "Marcus Vance", gender: "m", location: "Chicago, USA", img: "https://images.unsplash.com/photo-1534308143481-c55f00be8bd7" },
+      { name: "Tasnim Akter", gender: "f", location: "Barishal, Bangladesh", img: "https://images.unsplash.com/photo-1488426862026-3ee34a7d66df" },
+      { name: "Ethan Walker", gender: "m", location: "Auckland, New Zealand", img: "https://images.unsplash.com/photo-1528892952291-009c663ce843" },
+      { name: "Mehedi Hasan", gender: "m", location: "Gazipur, Bangladesh", img: "https://images.unsplash.com/photo-1504257432389-52343af06ae3" },
+      { name: "Sophia Rossi", gender: "f", location: "Rome, Italy", img: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e" },
+      { name: "Rakib Hossain", gender: "m", location: "Narayanganj, Bangladesh", img: "https://images.unsplash.com/photo-1496345875659-11f7dd282d1d" },
+      { name: "Chloe Dubois", gender: "f", location: "Paris, France", img: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04" },
+      { name: "Asif Mahmud", gender: "m", location: "Mymensingh, Bangladesh", img: "https://images.unsplash.com/photo-1521119989659-a83eee488004" },
+      { name: "Maya Lin", gender: "f", location: "Singapore", img: "https://images.unsplash.com/photo-1548142813-c348350df52b" },
+      { name: "Nabil Ahmed", gender: "m", location: "Sylhet, Bangladesh", img: "https://images.unsplash.com/photo-1506863530036-1efeddceb993" },
+      { name: "Hannah Scott", gender: "f", location: "Edinburgh, UK", img: "https://images.unsplash.com/photo-1546961329-78bef0414d7c" },
+      { name: "Salman Faris", gender: "m", location: "Doha, Qatar", img: "https://images.unsplash.com/photo-1517070208541-6ddc4d3efbcb" },
+      { name: "Elena Rostova", gender: "f", location: "Prague, Czechia", img: "https://images.unsplash.com/photo-1557053910-d9eadeed1c58" },
+      { name: "Zahid Iqbal", gender: "m", location: "Lahore, Pakistan", img: "https://images.unsplash.com/photo-1531427186611-ecfd6d936c79" },
+      { name: "Olivia Brown", gender: "f", location: "Sydney, Australia", img: "https://images.unsplash.com/photo-1534751516642-a171edd2521d" },
+      { name: "Shahriar Alam", gender: "m", location: "Rangpur, Bangladesh", img: "https://images.unsplash.com/photo-1560250097-0b93528c311a" },
+      { name: "Isabella Gomez", gender: "f", location: "Barcelona, Spain", img: "https://images.unsplash.com/photo-1567532939604-b6b5b0db2604" },
+      { name: "Taufiqur Rahman", gender: "m", location: "Habiganj, Sylhet, Bangladesh", img: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7" },
+      { name: "Daniel Kim", gender: "m", location: "Seoul, South Korea", img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d" },
+      { name: "Fariha Tabassum", gender: "f", location: "Dhaka, Bangladesh", img: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2" },
+      { name: "Alexander Wright", gender: "m", location: "Boston, USA", img: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e" },
+      { name: "Kazi Arman", gender: "m", location: "Brahmanbaria, Bangladesh", img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e" },
+      { name: "Noor Fatima", gender: "f", location: "Dubai, UAE", img: "https://images.unsplash.com/photo-1580489944761-15a19d654956" },
+      { name: "Victor Hugo", gender: "m", location: "Brussels, Belgium", img: "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61" },
+      { name: "Sabrina Yasmin", gender: "f", location: "Sunamganj, Sylhet, Bangladesh", img: "https://images.unsplash.com/photo-1569913486515-b74bf7751574" },
+      { name: "Julian Hayes", gender: "m", location: "Liverpool, UK", img: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d" },
+      { name: "Tahmidur Reza", gender: "m", location: "Bogura, Bangladesh", img: "https://images.unsplash.com/photo-1513956589380-bad6acb9b9d4" },
+      { name: "Samantha Lee", gender: "f", location: "Vancouver, Canada", img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2" },
+      { name: "Imran Nazir", gender: "m", location: "Kushtia, Bangladesh", img: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce" },
+      { name: "Benjamin Clark", gender: "m", location: "San Francisco, USA", img: "https://images.unsplash.com/photo-1501196354995-cbb51c65aaea" },
+      { name: "Afia Anjum", gender: "f", location: "Dinajpur, Bangladesh", img: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1" },
+      { name: "Oliver Smith", gender: "m", location: "Bristol, UK", img: "https://images.unsplash.com/photo-1534308143481-c55f00be8bd7" }
+    ];
+
+    const todayDate = getTodayDateFormatted();
+
+    const initialRecipientsList = rawStudents.map((st, index) => {
+      const rank = index + 1;
+      const isImad = rank === 4;
+      return {
+        id: `REC-2024-${String(rank).padStart(3, '0')}`,
+        rank: rank,
+        name: isImad ? "Muhammad Imad Uddin" : st.name,
+        location: isImad ? "Moulvibazar, Sylhet, Bangladesh" : st.location,
+        course: isImad ? "Professional Graphic Design Course" : "Graphic Design & Digital Media",
+        certId: `CSA-2024-${String(rank).padStart(3, '0')}`,
+        issueDate: todayDate,
+        status: "Verified",
+        isImad: isImad,
+        avatar: isImad ? imadIslamicAvatar : `${st.img}?auto=format&fit=crop&w=150&h=150&q=80`
+      };
+    });
+
+    const coursesData = [
+      {
+        id: "crs-1",
+        title: "Professional Graphic Design",
+        level: "All Levels",
+        duration: "12 Weeks",
+        fee: "$180",
+        rating: "4.9",
+        desc: "Master the complete visual design workflow from brand conceptualization to print and digital asset production.",
+        thumbnail: "https://images.unsplash.com/photo-1626785774573-4b799315345d?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        id: "crs-2",
+        title: "Adobe Photoshop Masterclass",
+        level: "Beginner to Advanced",
+        duration: "8 Weeks",
+        fee: "$120",
+        rating: "4.8",
+        desc: "Industry-standard photo manipulation, digital compositing, matte painting, and advanced color grading.",
+        thumbnail: "https://images.unsplash.com/photo-1558655146-d09347e92766?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        id: "crs-3",
+        title: "Adobe Illustrator Vector Art",
+        level: "Beginner to Intermediate",
+        duration: "8 Weeks",
+        fee: "$120",
+        rating: "4.9",
+        desc: "Geometric precision, vector illustration, character art, icons, and scalable typography systems.",
+        thumbnail: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        id: "crs-4",
+        title: "Canva Design & Visual Branding",
+        level: "Beginner",
+        duration: "4 Weeks",
+        fee: "$75",
+        rating: "4.7",
+        desc: "Rapid social media content creation, corporate presentations, and brand kit management.",
+        thumbnail: "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        id: "crs-5",
+        title: "Logo Design & Brand Identity",
+        level: "Intermediate",
+        duration: "6 Weeks",
+        fee: "$140",
+        rating: "5.0",
+        desc: "Learn to design enduring brand symbols, complete brand books, guidelines, and client presentation decks.",
+        thumbnail: "https://images.unsplash.com/photo-1600132806370-bf17e65e942f?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        id: "crs-6",
+        title: "Social Media & Advertising Design",
+        level: "Beginner to Intermediate",
+        duration: "6 Weeks",
+        fee: "$95",
+        rating: "4.8",
+        desc: "High-converting ad creatives for Instagram, Facebook, banners, and digital marketing materials.",
+        thumbnail: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        id: "crs-7",
+        title: "Banner & Poster Design",
+        level: "Intermediate",
+        duration: "6 Weeks",
+        fee: "$110",
+        rating: "4.7",
+        desc: "Large-format print design, CMYK pre-press setups, bleed margins, billboards, and event flyers.",
+        thumbnail: "https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        id: "crs-8",
+        title: "UI/UX Design Fundamentals",
+        level: "Intermediate to Advanced",
+        duration: "10 Weeks",
+        fee: "$190",
+        rating: "4.9",
+        desc: "User-centric wireframing, high-fidelity Figma prototypes, modern UI design systems, and tokens.",
+        thumbnail: "https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?auto=format&fit=crop&w=600&q=80"
+      }
+    ];
+
+    // রেন্ডারিং হেল্পার: মুহাম্মদ ইমাদ উদ্দিনের জন্য ইসলামিক ক্যালিগ্রাফি স্টাইল্ড অ্যাভাটার
+    const StudentAvatar = ({ recipient, size = "w-8 h-8" }) => {
+      if (recipient.isImad) {
+        return (
+          <div className={`relative ${size} rounded-full overflow-hidden border border-gold-500/60 shadow shrink-0 bg-navy-950 flex items-center justify-center`}>
+            {/* Background: Islamic Library Bookshelf */}
+            <img 
+              src={recipient.avatar} 
+              alt={recipient.name} 
+              className="w-full h-full object-cover filter brightness-75 contrast-125"
+            />
+            {/* Silhouette & Arabic Calligraphy Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-navy-950/70 via-transparent to-navy-950/40 flex items-center justify-center p-0.5 pointer-events-none">
+              <span className="text-[9px] sm:text-[11px] font-arabic font-bold text-white tracking-tighter drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)] opacity-95">
+                لا إله إلا الله
+              </span>
+            </div>
+          </div>
+        );
+      }
+      return (
+        <img 
+          src={recipient.avatar} 
+          alt={recipient.name} 
+          className={`${size} rounded-full object-cover border border-navy-700 shrink-0`}
+        />
+      );
+    };
+
+    function App() {
+      // Routing: 'public-site' vs 'admin-app'
+      const [appMode, setAppMode] = useState('public-site'); // 'public-site' | 'admin-app'
+      const [currentRoute, setCurrentRoute] = useState('home');
+      const [darkMode, setDarkMode] = useState(false);
+      
+      const [recipients, setRecipients] = useState(initialRecipientsList);
+      const [courses, setCourses] = useState(coursesData);
+      const [searchTerm, setSearchTerm] = useState("");
+      const [currentPage, setCurrentPage] = useState(1);
+      const itemsPerPage = 10;
+
+      // Admin Auth State for Dedicated Admin App
+      const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
+      const [adminPasskey, setAdminPasskey] = useState("");
+      const [adminTab, setAdminTab] = useState('recipients'); // 'analytics', 'recipients', 'courses'
+
+      // Public Auth & Modals
+      const [currentUser, setCurrentUser] = useState(null);
+      const [authModal, setAuthModal] = useState({ open: false, mode: 'login' });
+      const [certModal, setCertModal] = useState({ open: false, data: null });
+      const [toast, setToast] = useState(null);
+      const [verifySearchId, setVerifySearchId] = useState("");
+      const [verificationResult, setVerificationResult] = useState(null);
+      const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+      const showToast = (message, type = 'success') => {
+        setToast({ message, type });
+        setTimeout(() => setToast(null), 3500);
+      };
+
+      useEffect(() => {
+        if (window.lucide) {
+          window.lucide.createIcons();
+        }
+      });
+
+      // Recipient Filtering & Pagination
+      const filteredRecipients = useMemo(() => {
+        return recipients.filter(r => 
+          r.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          r.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          r.certId.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          String(r.rank).includes(searchTerm)
+        );
+      }, [recipients, searchTerm]);
+
+      const paginatedRecipients = useMemo(() => {
+        const start = (currentPage - 1) * itemsPerPage;
+        return filteredRecipients.slice(start, start + itemsPerPage);
+      }, [filteredRecipients, currentPage]);
+
+      const totalPages = Math.ceil(filteredRecipients.length / itemsPerPage);
+
+      // Certificate Verification Check
+      const handleVerifyCheck = (e, explicitId) => {
+        if (e) e.preventDefault();
+        const id = (explicitId || verifySearchId).trim().toUpperCase();
+        if (!id) return;
+
+        const match = recipients.find(r => r.certId.toUpperCase() === id);
+        if (match) {
+          setVerificationResult({
+            status: 'valid',
+            name: match.name,
+            location: match.location,
+            certId: match.certId,
+            course: match.course,
+            issueDate: match.issueDate || getTodayDateFormatted(),
+            rank: match.rank,
+            academy: "Creative Skills Academy"
+          });
+        } else {
+          setVerificationResult({ status: 'not_found' });
+        }
+      };
+
+      const openCertificate = (recipient) => {
+        setCertModal({
+          open: true,
+          data: {
+            name: recipient.name,
+            location: recipient.location,
+            course: recipient.course,
+            certId: recipient.certId,
+            issueDate: recipient.issueDate || getTodayDateFormatted(),
+            rank: recipient.rank
+          }
+        });
+      };
+
+      // =========================================================================
+      // স্বতন্ত্র ও সম্পূর্ণ আলাদা ADMIN APP
+      // =========================================================================
+      if (appMode === 'admin-app') {
+        // যদি অ্যাডমিন লগইন না করা থাকে -> সিকিউর লগইন স্ক্রিন
+        if (!isAdminLoggedIn) {
+          return (
+            <div className="min-h-screen bg-navy-950 flex items-center justify-center p-4 text-slate-100 font-sans">
+              <div className="max-w-md w-full bg-navy-900 border border-gold-500/40 rounded-2xl p-8 shadow-2xl space-y-6">
+                <div className="text-center space-y-2">
+                  <div className="w-16 h-16 rounded-2xl bg-gold-500/10 border border-gold-500/30 text-gold-400 flex items-center justify-center mx-auto shadow-inner">
+                    <i data-lucide="shield-check" className="w-8 h-8"></i>
+                  </div>
+                  <h1 className="text-xl font-bold font-serif text-white tracking-wide">
+                    CSA Admin Console App
+                  </h1>
+                  <p className="text-xs text-slate-400">
+                    Creative Skills Academy Institutional Control Portal
+                  </p>
+                </div>
+
+                <form onSubmit={(e) => {
+                  e.preventDefault();
+                  if (adminPasskey === "admin123" || adminPasskey === "") {
+                    setIsAdminLoggedIn(true);
+                    showToast("Admin Console Unlocked");
+                  } else {
+                    showToast("Invalid Key. (Default: admin123)", "error");
+                  }
+                }} className="space-y-4">
+                  <div>
+                    <label className="block text-xs font-bold uppercase text-slate-400 mb-1">Passkey Access</label>
+                    <input 
+                      type="password"
+                      placeholder="Enter admin passkey (or leave blank for demo)"
+                      value={adminPasskey}
+                      onChange={(e) => setAdminPasskey(e.target.value)}
+                      className="w-full px-4 py-2.5 rounded-lg bg-navy-950 border border-navy-700 text-xs text-white focus:outline-none focus:border-gold-500 font-mono"
+                    />
+                  </div>
+                  <button 
+                    type="submit" 
+                    className="w-full py-2.5 bg-gold-500 hover:bg-gold-400 text-navy-950 font-bold text-xs uppercase tracking-wider rounded-lg shadow"
+                  >
+                    Launch Admin App
+                  </button>
+                </form>
+
+                <div className="pt-4 border-t border-navy-800 text-center">
+                  <button 
+                    onClick={() => setAppMode('public-site')}
+                    className="text-xs text-slate-400 hover:text-gold-400 transition flex items-center justify-center space-x-1.5 mx-auto"
+                  >
+                    <i data-lucide="arrow-left" className="w-3.5 h-3.5"></i>
+                    <span>Back to Public Website</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          );
+        }
+
+        // লগইন করার পর মূল অ্যাডমিন অ্যাপ ইন্টারফেস
+        return (
+          <div className="min-h-screen bg-slate-900 text-slate-100 flex flex-col font-sans">
+            {toast && (
+              <div className="fixed top-6 right-6 z-50 flex items-center space-x-3 px-5 py-3 rounded-lg shadow-xl bg-navy-900 border border-gold-500 text-white text-xs">
+                <i data-lucide="check-circle" className="text-gold-400 w-4 h-4"></i>
+                <span>{toast.message}</span>
+              </div>
+            )}
+
+            {/* Admin App Dedicated Header */}
+            <header className="bg-navy-950 border-b border-navy-800 px-6 py-4 flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="w-9 h-9 rounded-lg bg-gold-500/20 text-gold-400 flex items-center justify-center font-bold">
+                  <i data-lucide="shield" className="w-5 h-5"></i>
+                </div>
+                <div>
+                  <h1 className="font-serif font-bold text-white text-base">CSA Management App</h1>
+                  <span className="text-[10px] text-emerald-400 uppercase font-mono tracking-wider">● Secure Institutional Session</span>
+                </div>
+              </div>
+
+              <div className="flex items-center space-x-3">
+                <button 
+                  onClick={() => setAppMode('public-site')}
+                  className="px-3 py-1.5 rounded-lg bg-navy-800 hover:bg-navy-700 text-xs font-semibold text-slate-200 transition flex items-center space-x-1.5 border border-navy-700"
+                >
+                  <i data-lucide="globe" className="w-3.5 h-3.5 text-gold-400"></i>
+                  <span>Public Academy Site</span>
+                </button>
+                <button 
+                  onClick={() => {
+                    setIsAdminLoggedIn(false);
+                    setAppMode('public-site');
+                    showToast("Signed out from Admin App");
+                  }}
+                  className="px-3 py-1.5 rounded-lg bg-red-600/80 hover:bg-red-600 text-xs font-semibold text-white transition"
+                >
+                  Exit App
+                </button>
+              </div>
+            </header>
+
+            {/* Admin App Body */}
+            <div className="flex-1 flex flex-col md:flex-row">
+              {/* Sidebar */}
+              <aside className="w-full md:w-64 bg-navy-950/90 border-r border-navy-800 p-4 space-y-2">
+                <div className="px-3 py-2 text-[10px] font-bold uppercase text-slate-500 tracking-wider">Dashboard Controls</div>
+                <button 
+                  onClick={() => setAdminTab('analytics')} 
+                  className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-xs font-semibold transition ${adminTab === 'analytics' ? 'bg-gold-500 text-navy-950 font-bold' : 'hover:bg-navy-800 text-slate-300'}`}
+                >
+                  <i data-lucide="pie-chart" className="w-4 h-4"></i>
+                  <span>Analytics & Stats</span>
+                </button>
+                <button 
+                  onClick={() => setAdminTab('recipients')} 
+                  className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-xs font-semibold transition ${adminTab === 'recipients' ? 'bg-gold-500 text-navy-950 font-bold' : 'hover:bg-navy-800 text-slate-300'}`}
+                >
+                  <i data-lucide="award" className="w-4 h-4"></i>
+                  <span>Recipients (50 Graduates)</span>
+                </button>
+                <button 
+                  onClick={() => setAdminTab('courses')} 
+                  className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-xs font-semibold transition ${adminTab === 'courses' ? 'bg-gold-500 text-navy-950 font-bold' : 'hover:bg-navy-800 text-slate-300'}`}
+                >
+                  <i data-lucide="book-open" className="w-4 h-4"></i>
+                  <span>Courses Control</span>
+                </button>
+              </aside>
+
+              {/* Main Workspace */}
+              <main className="flex-1 p-6 md:p-8 bg-slate-900 overflow-y-auto">
+                {adminTab === 'analytics' && (
+                  <div className="space-y-6">
+                    <h2 className="text-xl font-bold font-serif text-white">Institutional Live Metrics</h2>
+                    <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                      <div className="p-4 bg-navy-900 border border-navy-800 rounded-xl">
+                        <span className="text-xs text-slate-400">Total Recipients</span>
+                        <div className="text-2xl font-bold text-white mt-1">50 Students</div>
+                      </div>
+                      <div className="p-4 bg-navy-900 border border-navy-800 rounded-xl">
+                        <span className="text-xs text-slate-400">Active Tracks</span>
+                        <div className="text-2xl font-bold text-gold-400 mt-1">{courses.length} Programs</div>
+                      </div>
+                      <div className="p-4 bg-navy-900 border border-navy-800 rounded-xl">
+                        <span className="text-xs text-slate-400">Verified Credentials</span>
+                        <div className="text-2xl font-bold text-emerald-400 mt-1">100% Valid</div>
+                      </div>
+                      <div className="p-4 bg-navy-900 border border-navy-800 rounded-xl">
+                        <span className="text-xs text-slate-400">Live Date</span>
+                        <div className="text-sm font-bold text-slate-200 mt-1">{todayDate}</div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {adminTab === 'recipients' && (
+                  <div className="space-y-4">
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                      <div>
+                        <h2 className="text-xl font-bold font-serif text-white">Student Recipients Roster</h2>
+                        <p className="text-xs text-slate-400">Muhammad Imad Uddin is at position 4 (Moulvibazar, Sylhet, Bangladesh).</p>
+                      </div>
+
+                      <button 
+                        onClick={() => {
+                          const newName = prompt("Edit Position #4 Name:", "Muhammad Imad Uddin");
+                          if (newName) {
+                            setRecipients(prev => prev.map(r => r.rank === 4 ? { ...r, name: newName } : r));
+                            showToast("Position #4 name updated");
+                          }
+                        }}
+                        className="px-3.5 py-2 rounded-lg bg-gold-500 hover:bg-gold-400 text-navy-950 font-bold text-xs"
+                      >
+                        Edit Position #4
+                      </button>
+                    </div>
+
+                    <div className="border border-navy-800 rounded-xl overflow-hidden bg-navy-950">
+                      <table className="w-full text-left text-xs">
+                        <thead className="bg-navy-900 text-slate-400 border-b border-navy-800">
+                          <tr>
+                            <th className="py-3 px-4 w-16">Rank</th>
+                            <th className="py-3 px-4">Profile</th>
+                            <th className="py-3 px-4">Student Name</th>
+                            <th className="py-3 px-4">Home Location</th>
+                            <th className="py-3 px-4">Certificate ID</th>
+                            <th className="py-3 px-4 text-right">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-navy-900">
+                          {recipients.slice(0, 15).map(r => (
+                            <tr key={r.id} className={r.rank === 4 ? "bg-navy-850 font-medium" : "hover:bg-navy-900/60"}>
+                              <td className="py-3 px-4 font-mono text-slate-400">#{r.rank}</td>
+                              <td className="py-3 px-4">
+                                <StudentAvatar recipient={r} size="w-7 h-7" />
+                              </td>
+                              <td className="py-3 px-4 font-semibold text-white">
+                                {r.name}
+                                {r.rank === 4 && <span className="ml-2 text-[10px] text-gold-400 font-normal">(Position 4)</span>}
+                              </td>
+                              <td className="py-3 px-4 text-slate-400">{r.location}</td>
+                              <td className="py-3 px-4 font-mono text-slate-400">{r.certId}</td>
+                              <td className="py-3 px-4 text-right">
+                                <button 
+                                  onClick={() => {
+                                    const n = prompt(`Edit name for Rank #${r.rank}:`, r.name);
+                                    if(n) {
+                                      setRecipients(prev => prev.map(item => item.id === r.id ? { ...item, name: n } : item));
+                                      showToast("Name updated");
+                                    }
+                                  }}
+                                  className="text-gold-400 hover:underline text-xs"
+                                >
+                                  Edit Name
+                                </button>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                    <p className="text-[11px] text-slate-500 text-center">Displaying first 15 records. All 50 records are active and synchronized with public site.</p>
+                  </div>
+                )}
+
+                {adminTab === 'courses' && (
+                  <div className="space-y-4">
+                    <h2 className="text-xl font-bold font-serif text-white">Course Management</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {courses.map(crs => (
+                        <div key={crs.id} className="p-4 bg-navy-950 border border-navy-800 rounded-xl flex items-center justify-between">
+                          <div>
+                            <h4 className="font-bold text-sm text-white">{crs.title}</h4>
+                            <span className="text-xs text-slate-400">{crs.duration} • {crs.fee}</span>
+                          </div>
+                          <button onClick={() => showToast(`Module management opened for ${crs.title}`)} className="text-xs text-gold-400 hover:underline">Settings</button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </main>
+            </div>
+          </div>
+        );
+      }
+
+      // =========================================================================
+      // মূল পাবলিক ওয়েবসাইট (MAIN PUBLIC ACADEMY SITE)
+      // =========================================================================
+      return (
+        <div className="min-h-screen flex flex-col">
+          {/* Toast Notification */}
+          {toast && (
+            <div className="fixed bottom-6 right-6 z-50 flex items-center space-x-3 px-5 py-3 rounded-xl shadow-xl bg-navy-900 border border-gold-500 text-white text-xs">
+              <i data-lucide="info" className="text-gold-400 w-4 h-4"></i>
+              <span>{toast.message}</span>
+            </div>
+          )}
+
+          {/* NAVIGATION BAR */}
+          <nav className="sticky top-0 z-40 bg-navy-900 text-white border-b border-navy-800 shadow-md">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="flex items-center justify-between h-20">
+                
+                {/* Academy Logo */}
+                <div 
+                  onClick={() => { setCurrentRoute('home'); window.scrollTo({top: 0, behavior: 'smooth'}); }}
+                  className="flex items-center space-x-3 cursor-pointer"
+                >
+                  <div className="w-11 h-11 rounded-lg bg-navy-800 border border-gold-500/50 flex items-center justify-center text-gold-400">
+                    <i data-lucide="book-open" className="w-6 h-6"></i>
+                  </div>
+                  <div>
+                    <span className="text-lg font-bold tracking-tight font-serif text-white block leading-tight">
+                      CREATIVE <span className="text-gold-400">SKILLS</span>
+                    </span>
+                    <span className="text-[10px] tracking-wider text-slate-300 uppercase font-medium">
+                      Academy • Learn • Practice • Excel
+                    </span>
+                  </div>
+                </div>
+
+                {/* Desktop Nav Items */}
+                <div className="hidden lg:flex items-center space-x-6 text-xs font-semibold uppercase tracking-wider">
+                  <button onClick={() => setCurrentRoute('home')} className={`hover:text-gold-400 transition ${currentRoute === 'home' ? 'text-gold-400' : 'text-slate-200'}`}>Home</button>
+                  <button onClick={() => { setCurrentRoute('home'); setTimeout(() => document.getElementById('recipients-section')?.scrollIntoView({behavior: 'smooth'}), 100); }} className="hover:text-gold-400 text-slate-200 transition">🏆 Recipients</button>
+                  <button onClick={() => setCurrentRoute('courses')} className={`hover:text-gold-400 transition ${currentRoute === 'courses' ? 'text-gold-400' : 'text-slate-200'}`}>Courses</button>
+                  <button onClick={() => setCurrentRoute('verify')} className={`hover:text-gold-400 transition ${currentRoute === 'verify' ? 'text-gold-400' : 'text-slate-200'}`}>Verify Certificate</button>
+                  <button onClick={() => setCurrentRoute('contact')} className={`hover:text-gold-400 transition ${currentRoute === 'contact' ? 'text-gold-400' : 'text-slate-200'}`}>Contact</button>
+                  {currentUser && (
+                    <button onClick={() => setCurrentRoute('student-portal')} className="text-gold-400 hover:underline">My Student Portal</button>
+                  )}
+                </div>
+
+                {/* Right Side CTAs */}
+                <div className="hidden lg:flex items-center space-x-3">
+                  <button 
+                    onClick={() => setDarkMode(!darkMode)}
+                    className="p-2 rounded-lg bg-navy-800 text-gold-400 hover:bg-navy-700 transition"
+                    title="Toggle Theme"
+                  >
+                    <i data-lucide={darkMode ? "sun" : "moon"} className="w-4 h-4"></i>
+                  </button>
+
+                  {currentUser ? (
+                    <button 
+                      onClick={() => { setCurrentUser(null); showToast("Signed out"); }}
+                      className="px-3 py-2 text-xs font-semibold rounded-lg bg-red-600/80 hover:bg-red-600 text-white transition"
+                    >
+                      Logout
+                    </button>
+                  ) : (
+                    <button 
+                      onClick={() => setAuthModal({ open: true, mode: 'login' })}
+                      className="px-4 py-2 text-xs font-bold rounded-lg bg-gold-500 text-navy-950 hover:bg-gold-400 transition shadow"
+                    >
+                      Student Login
+                    </button>
+                  )}
+                </div>
+
+                {/* Mobile Toggle */}
+                <div className="lg:hidden flex items-center space-x-2">
+                  <button onClick={() => setDarkMode(!darkMode)} className="p-2 text-gold-400">
+                    <i data-lucide={darkMode ? "sun" : "moon"} className="w-5 h-5"></i>
+                  </button>
+                  <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-2 text-white">
+                    <i data-lucide={mobileMenuOpen ? "x" : "menu"} className="w-6 h-6"></i>
+                  </button>
+                </div>
+
+              </div>
+            </div>
+
+            {/* Mobile Menu */}
+            {mobileMenuOpen && (
+              <div className="lg:hidden bg-navy-950 border-t border-navy-800 px-4 py-4 space-y-3 text-sm">
+                <button onClick={() => { setCurrentRoute('home'); setMobileMenuOpen(false); }} className="block w-full text-left py-1.5 text-slate-200">Home</button>
+                <button onClick={() => { setCurrentRoute('home'); setMobileMenuOpen(false); setTimeout(() => document.getElementById('recipients-section')?.scrollIntoView({behavior: 'smooth'}), 150); }} className="block w-full text-left py-1.5 text-gold-400">🏆 Certificate Recipients (Top)</button>
+                <button onClick={() => { setCurrentRoute('courses'); setMobileMenuOpen(false); }} className="block w-full text-left py-1.5 text-slate-200">Courses</button>
+                <button onClick={() => { setCurrentRoute('verify'); setMobileMenuOpen(false); }} className="block w-full text-left py-1.5 text-slate-200">Verify Certificate</button>
+                <button onClick={() => { setCurrentRoute('contact'); setMobileMenuOpen(false); }} className="block w-full text-left py-1.5 text-slate-200">Contact</button>
+                <div className="pt-2 border-t border-navy-800 flex flex-col space-y-2">
+                  <button onClick={() => { setAuthModal({open: true, mode: 'login'}); setMobileMenuOpen(false); }} className="w-full py-2 bg-gold-500 text-navy-950 rounded-lg text-xs font-bold">Student Login</button>
+                </div>
+              </div>
+            )}
+          </nav>
+
+          {/* MAIN CONTENT ROUTING */}
+          <main className="flex-grow">
+            {currentRoute === 'home' && (
+              <>
+                {/* ===================================================================== */}
+                {/* A. CERTIFICATE RECIPIENTS SECTION — VERY FIRST SECTION */}
+                {/* ===================================================================== */}
+                <section id="recipients-section" className="py-12 bg-navy-900 text-white border-b-2 border-gold-500">
+                  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    
+                    {/* Section Header */}
+                    <div className="text-center max-w-2xl mx-auto mb-8">
+                      <h2 className="text-2xl sm:text-3xl font-extrabold font-serif text-white flex items-center justify-center gap-2">
+                        <span>🏆</span>
+                        <span>Certificate Recipients</span>
+                      </h2>
+                      <p className="mt-1 text-sm text-slate-300">
+                        "Celebrating the achievements of our creative learners."
+                      </p>
+                    </div>
+
+                    {/* Filter & Search Bar */}
+                    <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6 bg-navy-800/90 p-4 rounded-xl border border-navy-700">
+                      <div className="relative w-full sm:w-96">
+                        <i data-lucide="search" className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
+                        <input 
+                          type="text" 
+                          placeholder="Search by student name, city or rank..."
+                          value={searchTerm}
+                          onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
+                          className="w-full pl-10 pr-4 py-2 rounded-lg bg-navy-950 border border-navy-700 text-white placeholder-slate-400 text-xs focus:outline-none focus:border-gold-500"
+                        />
+                      </div>
+                      <div className="text-xs text-slate-300">
+                        Total Registered Graduates: <strong className="text-gold-400">50</strong>
+                      </div>
+                    </div>
+
+                    {/* Clean & Balanced Table: Muhammad Imad Uddin at Rank 4 with Islamic Profile Picture & Location */}
+                    <div className="overflow-x-auto rounded-xl border border-navy-700 bg-navy-950 shadow-lg">
+                      <table className="w-full text-left border-collapse text-xs">
+                        <thead>
+                          <tr className="border-b border-navy-800 bg-navy-900/90 text-slate-400 uppercase tracking-wider text-[11px]">
+                            <th className="py-3.5 px-4 w-16 text-center">Rank</th>
+                            <th className="py-3.5 px-6">Learner Name</th>
+                            <th className="py-3.5 px-6 hidden sm:table-cell">Home Location</th>
+                            <th className="py-3.5 px-6 hidden md:table-cell">Certificate ID</th>
+                            <th className="py-3.5 px-4 text-center">Status</th>
+                            <th className="py-3.5 px-6 text-right">Verification</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-navy-800/80">
+                          {paginatedRecipients.map((recipient) => {
+                            const isImad = recipient.rank === 4;
+
+                            return (
+                              <tr 
+                                key={recipient.id}
+                                className={`transition-colors ${isImad ? 'bg-navy-900/90 border-l-4 border-l-gold-500' : 'hover:bg-navy-900/40'}`}
+                              >
+                                {/* Rank */}
+                                <td className="py-3.5 px-4 text-center font-mono font-bold text-slate-300">
+                                  #{recipient.rank}
+                                </td>
+
+                                {/* Name & Avatar */}
+                                <td className="py-3.5 px-6">
+                                  <div className="flex items-center space-x-3">
+                                    <StudentAvatar recipient={recipient} size="w-8 h-8" />
+                                    <div>
+                                      <span className="font-semibold text-slate-100 block">
+                                        {recipient.name}
+                                      </span>
+                                      <span className="text-[11px] text-slate-400 block sm:hidden">
+                                        {recipient.location}
+                                      </span>
+                                    </div>
+                                  </div>
+                                </td>
+
+                                {/* Location */}
+                                <td className="py-3.5 px-6 hidden sm:table-cell text-slate-300">
+                                  <span className="flex items-center space-x-1">
+                                    <i data-lucide="map-pin" className="w-3.5 h-3.5 text-gold-400"></i>
+                                    <span>{recipient.location}</span>
+                                  </span>
+                                </td>
+
+                                {/* Cert ID */}
+                                <td className="py-3.5 px-6 hidden md:table-cell font-mono text-slate-400">
+                                  {recipient.certId}
+                                </td>
+
+                                {/* Status */}
+                                <td className="py-3.5 px-4 text-center">
+                                  <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+                                    Verified
+                                  </span>
+                                </td>
+
+                                {/* View / Verify Action */}
+                                <td className="py-3.5 px-6 text-right">
+                                  <button
+                                    onClick={() => openCertificate(recipient)}
+                                    className="px-3 py-1.5 rounded-md text-xs font-medium bg-navy-800 hover:bg-navy-700 text-gold-400 border border-navy-700 transition inline-flex items-center space-x-1.5"
+                                  >
+                                    <i data-lucide="file-text" className="w-3.5 h-3.5"></i>
+                                    <span>Certificate</span>
+                                  </button>
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    {/* Pagination */}
+                    <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
+                      <span className="text-slate-400">Showing page {currentPage} of {totalPages} (10 entries per page)</span>
+                      <div className="flex items-center space-x-1.5">
+                        <button
+                          disabled={currentPage === 1}
+                          onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                          className="px-3 py-1.5 rounded bg-navy-800 text-slate-300 disabled:opacity-40"
+                        >
+                          Prev
+                        </button>
+                        {[...Array(totalPages)].map((_, i) => (
+                          <button
+                            key={i}
+                            onClick={() => setCurrentPage(i + 1)}
+                            className={`w-7 h-7 rounded text-xs font-bold transition ${currentPage === i + 1 ? 'bg-gold-500 text-navy-950' : 'bg-navy-800 text-slate-300'}`}
+                          >
+                            {i + 1}
+                          </button>
+                        ))}
+                        <button
+                          disabled={currentPage === totalPages}
+                          onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                          className="px-3 py-1.5 rounded bg-navy-800 text-slate-300 disabled:opacity-40"
+                        >
+                          Next
+                        </button>
+                      </div>
+                    </div>
+
+                  </div>
+                </section>
+
+                {/* ===================================================================== */}
+                {/* B. HERO SECTION */}
+                {/* ===================================================================== */}
+                <section className="py-20 bg-navy-950 text-white border-b border-navy-800">
+                  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                      
+                      <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
+                        <div className="inline-block px-3 py-1 rounded-full bg-navy-800 border border-gold-500/30 text-gold-400 text-xs font-semibold uppercase tracking-wider">
+                          Learn • Practice • Excel
+                        </div>
+
+                        <h1 className="text-4xl sm:text-6xl font-bold font-serif tracking-tight leading-tight">
+                          Unlock Your <span className="text-gold-400">Creativity</span>
+                        </h1>
+
+                        <p className="text-base sm:text-lg text-slate-300 max-w-2xl leading-relaxed">
+                          Learn professional graphic design skills and turn your creativity into a career with Creative Skills Academy. Build Your Skills, Build Your Future.
+                        </p>
+
+                        <div className="flex flex-wrap gap-3 justify-center lg:justify-start pt-2">
+                          <button 
+                            onClick={() => setCurrentRoute('courses')}
+                            className="px-6 py-3 rounded-lg bg-gold-500 text-navy-950 font-bold hover:bg-gold-400 transition text-xs uppercase tracking-wider shadow"
+                          >
+                            Explore Courses
+                          </button>
+                          
+                          <button 
+                            onClick={() => setAuthModal({ open: true, mode: 'register' })}
+                            className="px-6 py-3 rounded-lg border border-gold-500 text-gold-400 font-bold hover:bg-gold-500/10 transition text-xs uppercase tracking-wider"
+                          >
+                            Apply for Admission
+                          </button>
+
+                          <button 
+                            onClick={() => setCurrentRoute('verify')}
+                            className="px-6 py-3 rounded-lg bg-navy-800 text-slate-200 hover:text-white transition text-xs uppercase tracking-wider"
+                          >
+                            Verify Certificate
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="lg:col-span-5">
+                        <div className="p-4 bg-navy-900 border border-navy-800 rounded-2xl shadow-xl">
+                          <img 
+                            src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=700&q=80" 
+                            alt="Design Studio" 
+                            className="rounded-xl w-full h-64 object-cover"
+                          />
+                          <div className="p-4 text-center">
+                            <h3 className="font-bold text-white text-sm">Professional Graphic Workstation</h3>
+                            <p className="text-xs text-slate-400 mt-1">Real-world projects in Photoshop, Illustrator & Figma</p>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                </section>
+
+                {/* ===================================================================== */}
+                {/* C. ACADEMY INTRODUCTION */}
+                {/* ===================================================================== */}
+                <section className="py-16 bg-surface-light dark:bg-navy-900">
+                  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="max-w-3xl mx-auto text-center mb-12">
+                      <h2 className="text-2xl sm:text-3xl font-bold font-serif text-navy-900 dark:text-white">
+                        Welcome to Creative Skills Academy
+                      </h2>
+                      <p className="mt-4 text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed">
+                        Creative Skills Academy is a learning platform focused on graphic design, creativity, and digital skills. Our goal is to help learners develop practical design skills through structured learning and creative practice.
+                      </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      <div className="p-6 bg-white dark:bg-navy-800 rounded-xl border border-slate-200 dark:border-navy-700 shadow-sm">
+                        <div className="w-10 h-10 rounded-lg bg-navy-100 dark:bg-navy-900 text-gold-500 flex items-center justify-center mb-4">
+                          <i data-lucide="target" className="w-5 h-5"></i>
+                        </div>
+                        <h3 className="font-bold text-base text-navy-900 dark:text-white mb-2">Academy Mission</h3>
+                        <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                          To equip passionate learners with actionable, modern digital design skills that foster creative expression and career growth.
+                        </p>
+                      </div>
+
+                      <div className="p-6 bg-white dark:bg-navy-800 rounded-xl border border-slate-200 dark:border-navy-700 shadow-sm">
+                        <div className="w-10 h-10 rounded-lg bg-navy-100 dark:bg-navy-900 text-gold-500 flex items-center justify-center mb-4">
+                          <i data-lucide="eye" className="w-5 h-5"></i>
+                        </div>
+                        <h3 className="font-bold text-base text-navy-900 dark:text-white mb-2">Academy Vision</h3>
+                        <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                          To create a structured, supportive learning space where aspiring designers turn theoretical principles into client-ready designs.
+                        </p>
+                      </div>
+
+                      <div className="p-6 bg-white dark:bg-navy-800 rounded-xl border border-slate-200 dark:border-navy-700 shadow-sm">
+                        <div className="w-10 h-10 rounded-lg bg-navy-100 dark:bg-navy-900 text-gold-500 flex items-center justify-center mb-4">
+                          <i data-lucide="award" className="w-5 h-5"></i>
+                        </div>
+                        <h3 className="font-bold text-base text-navy-900 dark:text-white mb-2">Learning Benefits</h3>
+                        <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                          Comprehensive step-by-step assignments, portfolio building mentorship, and verifiable Certificates of Completion.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+
+                {/* ===================================================================== */}
+                {/* D. POPULAR COURSES */}
+                {/* ===================================================================== */}
+                <section className="py-16 bg-white dark:bg-navy-950 border-t border-slate-200 dark:border-navy-800">
+                  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="text-center max-w-2xl mx-auto mb-12">
+                      <h2 className="text-2xl sm:text-3xl font-bold font-serif text-navy-900 dark:text-white">
+                        Popular Courses
+                      </h2>
+                      <p className="mt-2 text-xs sm:text-sm text-slate-500 dark:text-slate-400">
+                        Choose from 8 specialized graphic design tracks designed for beginners and intermediates.
+                      </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                      {courses.map((course) => (
+                        <div key={course.id} className="bg-surface-light dark:bg-navy-900 rounded-xl overflow-hidden border border-slate-200 dark:border-navy-800 flex flex-col shadow-sm">
+                          <img src={course.thumbnail} alt={course.title} className="h-44 w-full object-cover" />
+                          <div className="p-5 flex flex-col flex-1">
+                            <div className="flex justify-between items-center text-xs mb-2">
+                              <span className="text-gold-600 dark:text-gold-400 font-bold">{course.level}</span>
+                              <span className="font-mono text-slate-500">{course.duration}</span>
+                            </div>
+                            <h3 className="font-bold text-sm text-navy-900 dark:text-white mb-2 leading-snug">{course.title}</h3>
+                            <p className="text-xs text-slate-600 dark:text-slate-300 mb-4 flex-1 line-clamp-2">{course.desc}</p>
+                            <div className="pt-3 border-t border-slate-200 dark:border-navy-800 flex items-center justify-between">
+                              <span className="font-bold text-navy-900 dark:text-white text-sm">{course.fee}</span>
+                              <button 
+                                onClick={() => setAuthModal({ open: true, mode: 'register' })} 
+                                className="px-3 py-1.5 rounded bg-gold-500 hover:bg-gold-400 text-navy-950 font-bold text-xs"
+                              >
+                                Enroll Now
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </section>
+
+                {/* ===================================================================== */}
+                {/* E. WHY CHOOSE US */}
+                {/* ===================================================================== */}
+                <section className="py-16 bg-surface-light dark:bg-navy-900">
+                  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="text-center max-w-2xl mx-auto mb-12">
+                      <h2 className="text-2xl sm:text-3xl font-bold font-serif text-navy-900 dark:text-white">
+                        Why Choose Us
+                      </h2>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {[
+                        { title: "Practical Learning", desc: "Work on authentic brand briefs and real designs rather than just theoretical notes." },
+                        { title: "Creative Skill Development", desc: "Build confidence in visual balance, typography, colors, and layout aesthetics." },
+                        { title: "Student Dashboard", desc: "Dedicated portal to keep track of enrolled modules and digital certificate records." },
+                        { title: "Professional Course Structure", desc: "Curated module-by-module learning paths from vector basics to brand presentation." },
+                        { title: "Certificate Management", desc: "Verifiable graduation credentials assigned with distinct IDs for portfolio integrity." },
+                        { title: "Student Support", desc: "Helpful instructor assistance for feedback on exercise files and projects." }
+                      ].map((item, idx) => (
+                        <div key={idx} className="p-6 bg-white dark:bg-navy-800 rounded-xl border border-slate-200 dark:border-navy-700">
+                          <h3 className="font-bold text-sm text-navy-900 dark:text-white mb-2">{item.title}</h3>
+                          <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">{item.desc}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </section>
+
+                {/* ===================================================================== */}
+                {/* F. STUDENT ACHIEVEMENTS */}
+                {/* ===================================================================== */}
+                <section className="py-16 bg-white dark:bg-navy-950 border-t border-slate-200 dark:border-navy-800">
+                  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="text-center max-w-2xl mx-auto mb-12">
+                      <h2 className="text-2xl sm:text-3xl font-bold font-serif text-navy-900 dark:text-white">
+                        Student Achievements & Design Showcase
+                      </h2>
+                      <p className="mt-1 text-xs text-slate-400">[Sample Student Portfolio Projects]</p>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                      {[
+                        { title: "Brand Identity Concept", author: "Student Showcase", img: "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?auto=format&fit=crop&w=500&q=80" },
+                        { title: "Event Visual Poster", author: "Graphic Batch 02", img: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=500&q=80" },
+                        { title: "Mobile UI Design Kit", author: "Design Track", img: "https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?auto=format&fit=crop&w=500&q=80" },
+                        { title: "Packaging Vector Box", author: "Branding Studio", img: "https://images.unsplash.com/photo-1544787219-7f47ccb76574?auto=format&fit=crop&w=500&q=80" }
+                      ].map((item, idx) => (
+                        <div key={idx} className="rounded-xl overflow-hidden border border-slate-200 dark:border-navy-800 bg-navy-900">
+                          <img src={item.img} alt={item.title} className="w-full h-48 object-cover" />
+                          <div className="p-4">
+                            <h4 className="font-bold text-xs text-white">{item.title}</h4>
+                            <span className="text-[11px] text-slate-400">{item.author}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </section>
+
+                {/* ===================================================================== */}
+                {/* G. ADMISSION SECTION */}
+                {/* ===================================================================== */}
+                <section className="py-16 bg-navy-900 text-white border-t border-navy-800 text-center">
+                  <div className="max-w-3xl mx-auto px-4">
+                    <h2 className="text-2xl sm:text-4xl font-bold font-serif">
+                      Start Your Creative Journey Today
+                    </h2>
+                    <p className="mt-3 text-sm text-slate-300">
+                      Enroll now in our practical graphic design tracks and build a strong foundation for your creative future.
+                    </p>
+                    <div className="mt-6">
+                      <button 
+                        onClick={() => setAuthModal({ open: true, mode: 'register' })}
+                        className="px-8 py-3.5 rounded-lg bg-gold-500 hover:bg-gold-400 text-navy-950 font-bold text-xs uppercase tracking-wider shadow-lg"
+                      >
+                        Apply for Admission
+                      </button>
+                    </div>
+                  </div>
+                </section>
+
+                {/* ===================================================================== */}
+                {/* H. TESTIMONIALS */}
+                {/* ===================================================================== */}
+                <section className="py-16 bg-surface-light dark:bg-navy-900">
+                  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="text-center max-w-2xl mx-auto mb-12">
+                      <h2 className="text-2xl sm:text-3xl font-bold font-serif text-navy-900 dark:text-white">
+                        Student Testimonials
+                      </h2>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      {[
+                        { name: "Muhammad Imad Uddin", text: "The structured approach to vector tools and brand design helped me understand layout balance and color harmony with confidence.", role: "Graduate from Moulvibazar, Sylhet" },
+                        { name: "Sarah Jenkins", text: "Practical and clear instructions. Building real banners and social media ads made learning intuitive.", role: "Digital Media Student" },
+                        { name: "Tanvir Hasan", text: "Great curriculum and transparent certificate verification. A helpful platform for beginning designers.", role: "Adobe Masterclass Learner" }
+                      ].map((t, idx) => (
+                        <div key={idx} className="p-6 bg-white dark:bg-navy-800 rounded-xl border border-slate-200 dark:border-navy-700 shadow-sm">
+                          <p className="text-xs text-slate-600 dark:text-slate-300 italic mb-4 leading-relaxed">"{t.text}"</p>
+                          <div className="border-t border-slate-100 dark:border-navy-700 pt-3">
+                            <h4 className="font-bold text-xs text-navy-900 dark:text-white">{t.name}</h4>
+                            <span className="text-[11px] text-slate-400">{t.role}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </section>
+
+                {/* ===================================================================== */}
+                {/* I. FAQ */}
+                {/* ===================================================================== */}
+                <section className="py-16 bg-white dark:bg-navy-950 border-t border-slate-200 dark:border-navy-800">
+                  <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="text-center mb-10">
+                      <h2 className="text-2xl sm:text-3xl font-bold font-serif text-navy-900 dark:text-white">
+                        Frequently Asked Questions
+                      </h2>
+                    </div>
+
+                    <div className="space-y-3">
+                      {[
+                        { q: "What is Creative Skills Academy?", a: "Creative Skills Academy is an independent design education platform offering courses in graphic design, branding, and digital media tools." },
+                        { q: "Which courses are available?", a: "We offer 8 focused courses including Professional Graphic Design, Photoshop, Illustrator, Canva, Logo Design, Social Media Design, Banner Design, and UI/UX." },
+                        { q: "How can I enroll?", a: "You can click on 'Apply for Admission' or 'Enroll Now' on any course card to submit your registration form." },
+                        { q: "How do I access my student dashboard?", a: "Log in with your registered email and password to view active course progress and assignments." },
+                        { q: "How are certificates issued?", a: "Certificates are issued following course project reviews and approval by academy instructors." },
+                        { q: "How can I verify a certificate?", a: "Use the 'Verify Certificate' page to input the unique Certificate ID printed on the document." },
+                        { q: "How can I contact the academy?", a: "Reach us through our contact form, admissions email, or office WhatsApp line." }
+                      ].map((item, i) => (
+                        <details key={i} className="group bg-surface-light dark:bg-navy-900 p-4 rounded-lg border border-slate-200 dark:border-navy-800">
+                          <summary className="font-bold text-xs sm:text-sm text-navy-900 dark:text-white cursor-pointer list-none flex justify-between items-center">
+                            <span>{item.q}</span>
+                            <span className="text-gold-500 font-bold ml-2">+</span>
+                          </summary>
+                          <p className="mt-2 pt-2 border-t border-slate-200 dark:border-navy-800 text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                            {item.a}
+                          </p>
+                        </details>
+                      ))}
+                    </div>
+                  </div>
+                </section>
+              </>
+            )}
+
+            {/* Courses View */}
+            {currentRoute === 'courses' && (
+              <section className="py-16 max-w-7xl mx-auto px-4">
+                <h1 className="text-3xl font-bold font-serif text-navy-900 dark:text-white mb-8 text-center">All Academy Courses</h1>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {courses.map(crs => (
+                    <div key={crs.id} className="bg-white dark:bg-navy-900 rounded-xl border border-slate-200 dark:border-navy-800 overflow-hidden shadow">
+                      <img src={crs.thumbnail} alt={crs.title} className="w-full h-44 object-cover" />
+                      <div className="p-5">
+                        <div className="flex justify-between items-center text-xs mb-2">
+                          <span className="text-gold-500 font-bold">{crs.level}</span>
+                          <span className="font-bold text-navy-900 dark:text-white">{crs.fee}</span>
+                        </div>
+                        <h3 className="font-bold text-sm text-navy-900 dark:text-white mb-2">{crs.title}</h3>
+                        <p className="text-xs text-slate-600 dark:text-slate-300 mb-4">{crs.desc}</p>
+                        <button onClick={() => setAuthModal({ open: true, mode: 'register' })} className="w-full py-2 bg-gold-500 hover:bg-gold-400 text-navy-950 text-xs font-bold rounded">
+                          Enroll in Course
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* Public Certificate Verification View */}
+            {currentRoute === 'verify' && (
+              <section className="py-16 max-w-2xl mx-auto px-4">
+                <div className="text-center mb-8">
+                  <h1 className="text-3xl font-bold font-serif text-navy-900 dark:text-white">Verify Certificate</h1>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Enter a Certificate ID to verify credentials and student origin.</p>
+                </div>
+
+                <form onSubmit={handleVerifyCheck} className="p-6 bg-white dark:bg-navy-900 rounded-xl border border-slate-200 dark:border-navy-800 shadow">
+                  <label className="block text-xs font-bold uppercase text-slate-500 mb-2">Certificate ID</label>
+                  <div className="flex gap-2">
+                    <input 
+                      type="text" 
+                      placeholder="e.g. CSA-2024-004"
+                      value={verifySearchId}
+                      onChange={(e) => setVerifySearchId(e.target.value)}
+                      className="flex-1 px-4 py-2.5 rounded-lg bg-surface-light dark:bg-navy-950 border border-slate-300 dark:border-navy-700 text-xs font-mono uppercase focus:outline-none focus:border-gold-500"
+                    />
+                    <button type="submit" className="px-6 py-2.5 bg-gold-500 hover:bg-gold-400 text-navy-950 font-bold text-xs rounded-lg">
+                      Verify
+                    </button>
+                  </div>
+                  <span className="text-[11px] text-slate-400 mt-2 block">
+                    Example: Try <span className="text-gold-500 cursor-pointer underline" onClick={() => setVerifySearchId("CSA-2024-004")}>CSA-2024-004</span> (Muhammad Imad Uddin, Moulvibazar, Sylhet)
+                  </span>
+                </form>
+
+                {verificationResult && (
+                  <div className="mt-6 p-6 rounded-xl border bg-white dark:bg-navy-900 shadow">
+                    {verificationResult.status === 'valid' ? (
+                      <div className="space-y-3">
+                        <div className="text-emerald-500 font-bold text-sm flex items-center space-x-2">
+                          <i data-lucide="check-circle" className="w-5 h-5"></i>
+                          <span>Official Certificate Verified</span>
+                        </div>
+                        <div className="text-xs space-y-1.5 text-slate-600 dark:text-slate-300 pt-2 border-t border-slate-100 dark:border-navy-800">
+                          <div><strong>Holder Name:</strong> {verificationResult.name}</div>
+                          <div><strong>Location / Address:</strong> <span className="text-gold-500 font-semibold">{verificationResult.location}</span></div>
+                          <div><strong>Course:</strong> {verificationResult.course}</div>
+                          <div><strong>Certificate ID:</strong> {verificationResult.certId}</div>
+                          <div><strong>Issue Date:</strong> {verificationResult.issueDate}</div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="text-red-500 text-xs font-semibold">
+                        Certificate ID not found in the official registry.
+                      </div>
+                    )}
+                  </div>
+                )}
+              </section>
+            )}
+
+            {/* Student Portal View */}
+            {currentRoute === 'student-portal' && (
+              <section className="py-16 max-w-4xl mx-auto px-4">
+                <div className="p-6 bg-navy-900 text-white rounded-2xl mb-6 shadow">
+                  <h1 className="text-xl font-bold font-serif">{currentUser?.name || "Muhammad Imad Uddin"}</h1>
+                  <p className="text-xs text-slate-400 mt-1">
+                    Location: Moulvibazar, Sylhet, Bangladesh • ID: CSA-STU-8842
+                  </p>
+                </div>
+                <div className="p-6 bg-white dark:bg-navy-900 rounded-2xl border border-slate-200 dark:border-navy-800">
+                  <h3 className="font-bold text-sm text-navy-900 dark:text-white mb-3">Your Enrolled Courses</h3>
+                  <div className="p-4 bg-surface-light dark:bg-navy-950 rounded-lg text-xs flex justify-between items-center">
+                    <div>
+                      <h4 className="font-bold text-navy-900 dark:text-white">Professional Graphic Design Course</h4>
+                      <span className="text-slate-400">All Modules Completed</span>
+                    </div>
+                    <button 
+                      onClick={() => openCertificate({
+                        name: currentUser?.name || "Muhammad Imad Uddin",
+                        location: "Moulvibazar, Sylhet, Bangladesh",
+                        course: "Professional Graphic Design Course",
+                        certId: "CSA-2024-004",
+                        issueDate: getTodayDateFormatted(),
+                        rank: 4
+                      })}
+                      className="px-3 py-1.5 bg-gold-500 text-navy-950 font-bold rounded"
+                    >
+                      View Certificate
+                    </button>
+                  </div>
+                </div>
+              </section>
+            )}
+
+            {/* Contact View */}
+            {currentRoute === 'contact' && (
+              <section className="py-16 max-w-4xl mx-auto px-4">
+                <div className="text-center mb-8">
+                  <h1 className="text-3xl font-bold font-serif text-navy-900 dark:text-white">Contact Academy</h1>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <form onSubmit={(e) => { e.preventDefault(); showToast("Message submitted successfully"); }} className="p-6 bg-white dark:bg-navy-900 rounded-xl border border-slate-200 dark:border-navy-800 space-y-4">
+                    <div>
+                      <label className="block text-xs font-bold text-slate-500 mb-1">Your Name</label>
+                      <input required type="text" className="w-full px-3 py-2 rounded bg-surface-light dark:bg-navy-950 border border-slate-300 dark:border-navy-700 text-xs" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-slate-500 mb-1">Email</label>
+                      <input required type="email" className="w-full px-3 py-2 rounded bg-surface-light dark:bg-navy-950 border border-slate-300 dark:border-navy-700 text-xs" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-slate-500 mb-1">Message</label>
+                      <textarea required rows="4" className="w-full px-3 py-2 rounded bg-surface-light dark:bg-navy-950 border border-slate-300 dark:border-navy-700 text-xs"></textarea>
+                    </div>
+                    <button type="submit" className="w-full py-2.5 bg-gold-500 hover:bg-gold-400 text-navy-950 font-bold text-xs rounded">
+                      Send Inquiry
+                    </button>
+                  </form>
+                  <div className="p-6 bg-navy-900 text-white rounded-xl space-y-4 text-xs">
+                    <h3 className="font-bold text-gold-400 text-sm">Academy Office</h3>
+                    <p className="text-slate-300">Creative Skills Academy Administrative Campus</p>
+                    <div className="pt-2 space-y-2">
+                      <div>WhatsApp: +1 (555) 019-2834</div>
+                      <div>Email: admissions@creativeskills.academy</div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            )}
+          </main>
+
+          {/* FOOTER */}
+          <footer className="bg-navy-950 text-slate-400 border-t border-navy-800 text-xs">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div>
+                  <span className="font-serif font-bold text-white text-base block">CREATIVE SKILLS ACADEMY</span>
+                  <p className="text-slate-400 mt-2 leading-relaxed">Learn • Practice • Excel. Build Your Skills, Build Your Future.</p>
+                </div>
+                <div>
+                  <h4 className="text-white font-bold mb-3 uppercase tracking-wider">Quick Links</h4>
+                  <ul className="space-y-1.5">
+                    <li><button onClick={() => setCurrentRoute('home')} className="hover:text-gold-400">Home</button></li>
+                    <li><button onClick={() => { setCurrentRoute('home'); setTimeout(() => document.getElementById('recipients-section')?.scrollIntoView({behavior: 'smooth'}), 100); }} className="hover:text-gold-400">🏆 Recipients</button></li>
+                    <li><button onClick={() => setCurrentRoute('courses')} className="hover:text-gold-400">Courses</button></li>
+                    <li><button onClick={() => setCurrentRoute('verify')} className="hover:text-gold-400">Verify Certificate</button></li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="text-white font-bold mb-3 uppercase tracking-wider">Course Tracks</h4>
+                  <ul className="space-y-1.5">
+                    <li>Graphic Design Masterclass</li>
+                    <li>Adobe Photoshop & Illustrator</li>
+                    <li>Brand Identity & Logo</li>
+                    <li>UI/UX Design Systems</li>
+                  </ul>
+                </div>
+
+                {/* আলাদা ADMIN APP লঞ্চার */}
+                <div>
+                  <h4 className="text-white font-bold mb-3 uppercase tracking-wider">Management Control</h4>
+                  <button 
+                    onClick={() => setAppMode('admin-app')}
+                    className="px-3.5 py-2 rounded-lg bg-navy-900 hover:bg-navy-800 text-gold-400 border border-gold-500/30 transition flex items-center space-x-2 shadow"
+                  >
+                    <i data-lucide="lock" className="w-3.5 h-3.5 text-gold-400"></i>
+                    <span>Launch Admin App</span>
+                  </button>
+                  <p className="text-[11px] text-slate-500 mt-2">Restricted separate administrative portal.</p>
+                </div>
+              </div>
+
+              <div className="pt-6 border-t border-navy-900 text-center text-slate-500">
+                © {new Date().getFullYear()} Creative Skills Academy. All rights reserved.
+              </div>
+            </div>
+          </footer>
+
+          {/* ========================================================================= */}
+          {/* CERTIFICATE MODAL (WITH EXACT LOCATION & DYNAMIC TODAY'S DATE) */}
+          {/* ========================================================================= */}
+          {certModal.open && certModal.data && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-950/80 backdrop-blur-sm overflow-y-auto">
+              <div className="bg-white rounded-xl shadow-2xl max-w-4xl w-full p-4 text-slate-900 my-8">
+                <div className="flex justify-between items-center pb-3 mb-3 border-b border-slate-200">
+                  <span className="text-xs font-bold uppercase text-navy-900">Official Certificate of Completion</span>
+                  <div className="flex items-center space-x-2">
+                    <button 
+                      onClick={() => window.print()}
+                      className="px-3 py-1.5 bg-navy-900 text-gold-400 rounded text-xs font-bold"
+                    >
+                      Print Certificate
+                    </button>
+                    <button 
+                      onClick={() => setCertModal({ open: false, data: null })}
+                      className="p-1 text-slate-400 hover:text-slate-700"
+                    >
+                      <i data-lucide="x" className="w-5 h-5"></i>
+                    </button>
+                  </div>
+                </div>
+
+                <div id="printable-certificate" className="bg-[#FAF9F6] p-8 border-4 border-navy-900 text-center font-serif text-navy-950">
+                  <div className="border border-gold-500 p-6">
+                    <h2 className="text-xs uppercase tracking-widest font-sans font-bold text-navy-900">Creative Skills Academy</h2>
+                    <p className="text-[10px] text-gold-600 uppercase font-sans mb-4">Learn • Practice • Excel</p>
+
+                    <h1 className="text-3xl font-extrabold uppercase text-navy-900 border-b border-gold-500/40 pb-2 inline-block mb-3">
+                      Certificate of Completion
+                    </h1>
+
+                    <p className="font-sans text-xs uppercase tracking-widest text-slate-500 mt-2">
+                      This is to certify that
+                    </p>
+
+                    {/* Recipient Name and Location */}
+                    <div className="my-3">
+                      <span className="text-2xl sm:text-3xl font-bold text-gold-600 font-serif border-b border-slate-300 px-6 pb-1 inline-block">
+                        {certModal.data.name}
+                      </span>
+                      {certModal.data.location && (
+                        <p className="font-sans text-xs text-slate-600 mt-2 font-medium">
+                          <span className="text-slate-400">Hometown / Address:</span> <strong className="text-navy-900">{certModal.data.location}</strong>
+                        </p>
+                      )}
+                    </div>
+
+                    <p className="font-sans text-xs text-slate-700 max-w-lg mx-auto leading-relaxed mt-3">
+                      has successfully completed the <strong>{certModal.data.course}</strong> and demonstrated skills in graphic design, visual composition, and digital creativity.
+                    </p>
+
+                    <div className="mt-8 pt-4 grid grid-cols-2 font-sans text-xs">
+                      <div>
+                        <div className="w-28 mx-auto border-b border-navy-900 pb-1 italic font-serif">M. Armstrong</div>
+                        <span className="text-[10px] text-slate-500 uppercase mt-1 block">Instructor Signature</span>
+                      </div>
+                      <div>
+                        <div className="w-28 mx-auto border-b border-navy-900 pb-1 italic font-serif">Director Council</div>
+                        <span className="text-[10px] text-slate-500 uppercase mt-1 block">Director Signature</span>
+                      </div>
+                    </div>
+
+                    {/* সার্টিফিকেট এ লোকেশন, আইডি এবং আজকের তারিখ */}
+                    <div className="mt-6 pt-3 border-t border-slate-200 flex justify-between items-center text-[10px] font-sans text-slate-500">
+                      <span>ID: <strong>{certModal.data.certId}</strong></span>
+                      <span>LOCATION: <strong>{certModal.data.location}</strong></span>
+                      <span>DATE: <strong>{certModal.data.issueDate || getTodayDateFormatted()}</strong></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* AUTH MODAL */}
+          {authModal.open && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-950/80">
+              <div className="bg-white dark:bg-navy-900 rounded-xl shadow-xl max-w-sm w-full p-6 text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-navy-800">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-base font-bold text-navy-900 dark:text-white">
+                    {authModal.mode === 'login' ? 'Student Login' : 'Admission Application'}
+                  </h3>
+                  <button onClick={() => setAuthModal({ open: false, mode: 'login' })} className="text-slate-400">
+                    <i data-lucide="x" className="w-4 h-4"></i>
+                  </button>
+                </div>
+
+                <form onSubmit={(e) => {
+                  e.preventDefault();
+                  if (authModal.mode === 'login') {
+                    setCurrentUser({ name: "Muhammad Imad Uddin", email: "imad.uddin@example.com" });
+                    showToast("Logged in as Muhammad Imad Uddin");
+                    setCurrentRoute('student-portal');
+                  } else {
+                    showToast("Admission submitted successfully");
+                  }
+                  setAuthModal({ open: false, mode: 'login' });
+                }} className="space-y-3">
+
+                  {authModal.mode === 'register' && (
+                    <div>
+                      <label className="block text-xs font-bold text-slate-500 mb-1">Full Name</label>
+                      <input required type="text" placeholder="Your Full Name" className="w-full px-3 py-2 rounded bg-surface-light dark:bg-navy-950 border border-slate-300 dark:border-navy-700 text-xs" />
+                    </div>
+                  )}
+
+                  <div>
+                    <label className="block text-xs font-bold text-slate-500 mb-1">Email</label>
+                    <input required type="email" placeholder="name@example.com" className="w-full px-3 py-2 rounded bg-surface-light dark:bg-navy-950 border border-slate-300 dark:border-navy-700 text-xs" />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-slate-500 mb-1">Password</label>
+                    <input required type="password" placeholder="••••••••" className="w-full px-3 py-2 rounded bg-surface-light dark:bg-navy-950 border border-slate-300 dark:border-navy-700 text-xs" />
+                  </div>
+
+                  <button type="submit" className="w-full py-2.5 rounded bg-gold-500 hover:bg-gold-400 text-navy-950 font-bold text-xs mt-2">
+                    {authModal.mode === 'login' ? 'Sign In' : 'Submit Admission'}
+                  </button>
+                </form>
+
+                <div className="mt-3 text-center text-xs text-slate-500">
+                  {authModal.mode === 'login' ? (
+                    <button onClick={() => setAuthModal({ open: true, mode: 'register' })} className="text-gold-500 hover:underline">Apply for Admission</button>
+                  ) : (
+                    <button onClick={() => setAuthModal({ open: true, mode: 'login' })} className="text-gold-500 hover:underline">Already registered? Log in</button>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
